@@ -1,0 +1,31 @@
+html
+    head
+        title="this is a message in the head tag"
+        link(rel="stylesheet", href="/chat.css")
+    body
+        h3="Log in form"
+        div
+            form(action="/api/users/login", method="POST")
+                div
+                    label(for="username")="Username (email)"
+                    input(id="email" type="text" name="username")
+                div
+                    label(for="password")="Password"
+                    input(id="password" type="text" name="password")
+                button(id="")="log in"
+        div(id="chatEntry")
+            p="chat"
+            label(for="chatEmail")="Email"
+            input(type="text" id="chatEmail" name="chatEmail" value="asd@asd.com")
+            button(id="startChatBtn")="start chat"
+        div(class="chatMsgs" id="chatMsgsList")
+            ul(id="chatList")
+                li="chatBot: Hola, soy el bot de chat, puedo ayudarte con lo siguiente: stock, orden o carrito"
+            div
+                input(type="text" id="chatMsg")
+                button(id="sendMsgBtn")="Enviar mensaje"
+        div
+            a(href="/api/users/signup")="Sign Up"
+        script(src="/socket.io/socket.io.js")
+        script(src="/bot.js")
+

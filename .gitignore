@@ -1,0 +1,6 @@
+node_modules/
+TO-DOs.txt
+.env
+dist/
+expectativas.odt
+.DS_store
