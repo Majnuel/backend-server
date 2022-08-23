@@ -1,10 +1,12 @@
 import express from "express";
 import passport from "passport";
+import { emptyCart } from "../api/carts";
+import { newOrder } from "../api/orders";
 import config from "../config";
 import { retrieveUserData } from "../helpers/userDataFromReqObj";
 import {
   productListForEmail,
-  productListForWhatsapp,
+  productListForWhatsapp
 } from "../helpers/userProductsList";
 import { cartModel } from "../models/carts";
 import { logger } from "../services/logger";
@@ -65,7 +67,7 @@ export const getUserData = async (
   res.json({
     msg: "User data",
     userdata: req.user,
-    cart: cart[0].products,
+    cart: cart[0].products
   });
 };
 
@@ -75,25 +77,38 @@ export const userCheckOut = async (
 ) => {
   const userID = req.session.passport?.user;
   const cart = await cartModel.find({ owner: `${userID}` });
-  EmailService.sendEmail(
-    config.GMAIL_EMAIL,
-    `Nuevo pedido de ${retrieveUserData(req).name}`,
-    `<h1>Nuevo pedido de ${
-      retrieveUserData(req).name
-    }:</h1><h4>Productos:</h4><ul>${productListForEmail(cart[0].products)}</ul>`
-  );
-  SmsService.sendMessage(
-    retrieveUserData(req).phone,
-    "Su pedido ha sido recibido y se encuentra en proceso"
-  );
-  SmsService.sendWhatsAppMessage(
-    config.ADMIN_PHONE_NUMBER,
-    `Nuevo pedido de ${retrieveUserData(req).name}:\n\n${productListForWhatsapp(
-      cart[0].products
-    )}`
-  );
-  res.json({
-    msg: `user ${userID}, wants to check out`,
-    cart: cart[0].products,
-  });
+  if (cart[0].products.length === 0) {
+    res.status(400).json({ msg: "cant checkout on an empty cart" });
+  } else {
+    await newOrder(userID, cart);
+    // email de aviso al administrador:
+    EmailService.sendEmail(
+      config.GMAIL_EMAIL,
+      `Nuevo pedido de ${retrieveUserData(req).name}`,
+      `<h1>Nuevo pedido de ${
+        retrieveUserData(req).name
+      }:</h1><h4>Productos:</h4><ul>${productListForEmail(
+        cart[0].products
+      )}</ul>`
+    );
+    // aviso SMS a cliente:
+    // SmsService.sendMessage(
+    //   retrieveUserData(req).phone,
+    //   "Su pedido ha sido recibido y se encuentra en proceso"
+    // );
+    // aviso whatsapp al administrador:
+    // SmsService.sendWhatsAppMessage(
+    //   config.ADMIN_PHONE_NUMBER,
+    //   `Nuevo pedido de ${retrieveUserData(req).name}:\n\n${productListForWhatsapp(
+    //     cart[0].products
+    //   )}`
+    // );
+
+    // vacio el carro una vez generada la orden:
+    emptyCart(cart._id);
+    res.json({
+      msg: `user ${userID}, wants to check out`,
+      cart: cart[0].products
+    });
+  }
 };

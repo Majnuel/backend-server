@@ -34,6 +34,7 @@ export const addToCart = async (
       product: productToAdd.name,
       quantity: quantity,
       productId: productId,
+      price: productToAdd.price
     });
   }
 
@@ -65,7 +66,7 @@ export const deleteFromCart = async (userId: string, productId: string) => {
     {
       products: existingProductsCopy.filter(
         (item) => item.productId !== productId
-      ),
+      )
     }
   );
 };
@@ -74,4 +75,10 @@ export const newCart = async (id: string) => {
   const newCart = { owner: id, products: [] };
   await cartModel.create(newCart);
   logger.verbose(`new cart with ID:[${id}] created`);
+};
+
+export const emptyCart = async (cartId: string) => {
+  console.log("vaciando carro!!!");
+
+  await cartModel.findOneAndUpdate({ id: cartId }, { products: [] });
 };

@@ -6,8 +6,9 @@ import {
   getCartByUser,
   addToCart,
   deleteFromCart,
-  newCart,
+  newCart
 } from "../api/carts";
+import { ApiError, ErrorStatus } from "../api/error";
 
 export const getAllCarts = async (
   req: express.Request,
@@ -40,6 +41,10 @@ export const addProductToCart = async (
   try {
     const { productId } = req.params;
     const { quantity } = req.body;
+    if (!quantity) {
+      throw new ApiError("Quantity is needed", ErrorStatus.BadRequest);
+    }
+
     const userID = req.session.passport?.user;
     await addToCart(userID, productId, quantity);
 
