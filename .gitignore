@@ -5,3 +5,4 @@ dist/
 expectativas.odt
 .DS_store
 .~lock.expectativas.odt#
+logs/

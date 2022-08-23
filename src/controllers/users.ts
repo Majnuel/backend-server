@@ -104,8 +104,9 @@ export const userCheckOut = async (
     //   )}`
     // );
 
-    // vacio el carro una vez generada la orden:
+    // vacío el carro una vez generada la orden:
     emptyCart(cart._id);
+
     res.json({
       msg: `user ${userID}, wants to check out`,
       cart: cart[0].products
