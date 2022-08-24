@@ -2,18 +2,16 @@ import express from "express";
 const productsRouter = express.Router();
 import { isAdmin } from "../middlewares/isAdmin";
 import {
-  getAllProducts,
+  getProducts,
   createProduct,
-  getProductByID,
   deleteByID,
-  updateProduct,
+  updateProduct
 } from "../controllers/products";
 import { checkBodyProduct } from "../middlewares/checkBodyProduct";
 import expressAsyncHandler from "express-async-handler";
 
-productsRouter.get("/", expressAsyncHandler(getAllProducts));
+productsRouter.get("/:id?", expressAsyncHandler(getProducts));
 productsRouter.post("/", checkBodyProduct, expressAsyncHandler(createProduct));
-productsRouter.get("/:id", expressAsyncHandler(getProductByID));
 productsRouter.delete("/:id", isAdmin, expressAsyncHandler(deleteByID));
 productsRouter.put(
   "/:id",

@@ -5,18 +5,30 @@ import {
   deleteProduct,
   getById,
   newProduct,
-  update,
+  update
 } from "../api/products";
 
-export const getAllProducts = async (
+export const getProducts = async (
   req: express.Request,
   res: express.Response
 ) => {
-  try {
-    const products = await allProducts();
-    res.status(200).json({ products: products });
-  } catch (err: any) {
-    res.status(404).json({ error: err.message });
+  if (req.params.id) {
+    try {
+      const id = req.params.id;
+      const product = await getById(id);
+      res.status(200).json({ product: product });
+    } catch (err: any) {
+      res
+        .status(404)
+        .json({ msg: "not a valid product ID", error: err.message });
+    }
+  } else {
+    try {
+      const products = await allProducts();
+      res.status(200).json({ products: products });
+    } catch (err: any) {
+      res.status(404).json({ error: err.message });
+    }
   }
 };
 
