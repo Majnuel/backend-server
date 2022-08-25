@@ -1,4 +1,3 @@
-import { productModel } from "../models/products";
 import express from "express";
 import {
   allProducts,
@@ -40,19 +39,6 @@ export const createProduct = async (
     const product = { ...req.body };
     await newProduct(product);
     res.status(201).json({ product: product });
-  } catch (err: any) {
-    res.status(404).json({ error: err.message });
-  }
-};
-
-export const getProductByID = async (
-  req: express.Request,
-  res: express.Response
-) => {
-  try {
-    const id = req.params.id;
-    const product = await getById(id);
-    res.status(200).json({ product: product });
   } catch (err: any) {
     res.status(404).json({ error: err.message });
   }

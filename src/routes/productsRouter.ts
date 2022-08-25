@@ -11,7 +11,12 @@ import { checkBodyProduct } from "../middlewares/checkBodyProduct";
 import expressAsyncHandler from "express-async-handler";
 
 productsRouter.get("/:id?", expressAsyncHandler(getProducts));
-productsRouter.post("/", checkBodyProduct, expressAsyncHandler(createProduct));
+productsRouter.post(
+  "/",
+  isAdmin,
+  checkBodyProduct,
+  expressAsyncHandler(createProduct)
+);
 productsRouter.delete("/:id", isAdmin, expressAsyncHandler(deleteByID));
 productsRouter.put(
   "/:id",
