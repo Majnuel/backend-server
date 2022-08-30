@@ -9,6 +9,9 @@ import { isLoggedIn } from "../middlewares/auth";
 import helmet from "helmet";
 import { StoreOptions } from "../config/mongo-store";
 import * as http from "http";
+import swaggerUI from "swagger-ui-express";
+
+const swaggerDocument = require("../../documentation.json");
 
 export const myServer = http.createServer(app);
 
@@ -20,6 +23,9 @@ app.set("views", "./views");
 
 app.use(cookieParser());
 app.use(session(StoreOptions));
+
+//swagger:
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // security middleware:
 app.use(helmet());
