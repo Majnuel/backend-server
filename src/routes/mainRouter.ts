@@ -5,8 +5,14 @@ import { cartRouter } from "./cartRouter";
 import { userRouter } from "./userRouter";
 import { isLoggedIn } from "../middlewares/auth";
 import { imageRouter } from "./imageRouter";
+import swaggerUI from "swagger-ui-express";
 
-mainRouter.get("/", isLoggedIn, (req, res) => {
+const swaggerDocument = require("../../documentation.json");
+
+//swagger:
+mainRouter.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+mainRouter.get("/", (req, res) => {
   res.status(200).json({
     msg: "main API endpoint"
   });
