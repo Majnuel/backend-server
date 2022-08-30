@@ -3,7 +3,6 @@ const mainRouter = express.Router();
 import { productsRouter } from "./productsRouter";
 import { cartRouter } from "./cartRouter";
 import { userRouter } from "./userRouter";
-import { isLoggedIn } from "../middlewares/auth";
 import { imageRouter } from "./imageRouter";
 import swaggerUI from "swagger-ui-express";
 
