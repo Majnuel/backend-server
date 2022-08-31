@@ -25,7 +25,6 @@ function ValidateEmail(email) {
 
 // append server reply:
 const appendReply = (reply) => {
-  console.log("append reply function", reply);
   let newLi = document.createElement("li");
   newLi.classList.add("botResponse");
   newLi.textContent = `chatBot: ${reply}`;

@@ -19,3 +19,6 @@ export const newOrder = (userID: String, products: []) => {
     orderTotal: computeTotal(extractProducts(products))
   });
 };
+
+export const getOrderByUser = (userId: string) =>
+  orderModel.find({ user: userId });

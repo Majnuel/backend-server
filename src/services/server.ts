@@ -12,6 +12,8 @@ import * as http from "http";
 
 export const myServer = http.createServer(app);
 
+export const sessionMiddleware = session(StoreOptions);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -19,7 +21,7 @@ app.set("view engine", "pug");
 app.set("views", "./views");
 
 app.use(cookieParser());
-app.use(session(StoreOptions));
+app.use(sessionMiddleware);
 
 // security middleware:
 app.use(helmet());

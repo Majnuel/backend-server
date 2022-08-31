@@ -78,5 +78,5 @@ export const newCart = async (id: string) => {
 };
 
 export const emptyCart = async (cartId: string) => {
-  await cartModel.findOneAndUpdate({ id: cartId }, { products: [] });
+  await cartModel.findOneAndUpdate({ _id: cartId }, { products: [] });
 };

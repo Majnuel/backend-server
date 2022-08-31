@@ -5,6 +5,7 @@ import { cartRouter } from "./cartRouter";
 import { userRouter } from "./userRouter";
 import { imageRouter } from "./imageRouter";
 import swaggerUI from "swagger-ui-express";
+import { orderRouter } from "./orderRouter";
 
 const swaggerDocument = require("../../documentation.json");
 
@@ -21,5 +22,6 @@ mainRouter.use("/products", productsRouter);
 mainRouter.use("/carts", cartRouter);
 mainRouter.use("/users", userRouter);
 mainRouter.use("/images", imageRouter);
+mainRouter.use("/orders", orderRouter);
 
 export { mainRouter };

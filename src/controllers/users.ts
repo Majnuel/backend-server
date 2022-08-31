@@ -77,6 +77,7 @@ export const userCheckOut = async (
 ) => {
   const userID = req.session.passport?.user;
   const cart = await cartModel.find({ owner: `${userID}` });
+
   if (cart[0].products.length === 0) {
     res.status(400).json({ msg: "cant checkout on an empty cart" });
   } else {
@@ -105,7 +106,7 @@ export const userCheckOut = async (
     // );
 
     // vacío el carro una vez generada la orden:
-    emptyCart(cart._id);
+    emptyCart(cart[0]._id.toString());
 
     res.json({
       msg: `user ${userID}, wants to check out`,
