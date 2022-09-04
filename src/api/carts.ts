@@ -44,9 +44,14 @@ export const addToCart = async (
   );
 };
 
-export const deleteFromCart = async (userId: string, productId: string) => {
+export const deleteFromCart = async (
+  userId: string,
+  productId: string,
+  quantity: number
+) => {
   const cartToUpdate = await cartModel.find({ owner: `${userId}` });
   const productToDelete = await productModel.findById(productId);
+  console.log("QUANTITY!!!: ", quantity);
 
   if (!productToDelete) {
     throw new ApiError("Product does not exist in DB", ErrorStatus.NotFound);
@@ -61,8 +66,9 @@ export const deleteFromCart = async (userId: string, productId: string) => {
   if (indexOfItem === -1) {
     throw new ApiError("Product does not exist in cart", ErrorStatus.NotFound);
   }
+  console.log("product in cart: ", existingProductsCopy[indexOfItem]);
   await cartModel.findOneAndUpdate(
-    { _id: JSON.stringify(cartToUpdate[0]._id).substring(1, 25) },
+    { _id: cartToUpdate[0]._id.toString() },
     {
       products: existingProductsCopy.filter(
         (item) => item.productId !== productId

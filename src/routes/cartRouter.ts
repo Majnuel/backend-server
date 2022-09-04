@@ -6,7 +6,7 @@ import {
   getAllCarts,
   getCartProducts,
   addProductToCart,
-  deleteProductFromCart,
+  deleteProductFromCart
 } from "../controllers/carts";
 import expressAsyncHandler from "express-async-handler";
 
@@ -18,7 +18,7 @@ cartRouter.post(
   expressAsyncHandler(addProductToCart)
 );
 cartRouter.delete(
-  "/:productId",
+  "/:productId/:quantity?",
   isLoggedIn,
   expressAsyncHandler(deleteProductFromCart)
 );

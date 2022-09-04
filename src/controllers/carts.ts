@@ -59,9 +59,10 @@ export const deleteProductFromCart = async (
   res: express.Response
 ) => {
   try {
-    const { productId } = req.params;
+    const { productId, quantity } = req.params;
+    const parsedQuantity = parseInt(quantity);
     const userID = req.session.passport?.user;
-    await deleteFromCart(userID, productId);
+    await deleteFromCart(userID, productId, parsedQuantity);
 
     res.status(200).json({ msg: "deleted from cart" });
   } catch (err: any) {
