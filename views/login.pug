@@ -7,25 +7,27 @@ html
         div
             form(action="/api/users/login", method="POST")
                 div
-                    label(for="username")="Username (email)"
+                    label(for="username" class="labelsWidth")="Username (email):"
                     input(id="email" type="text" name="username")
                 div
-                    label(for="password")="Password"
+                    label(for="password" class="labelsWidth")="Password:"
                     input(id="password" type="text" name="password")
                 button(id="")="log in"
+        div
+            span="Dont have an account?  "
+            a(href="/api/users/signup" class="labelsWidth")="Sign Up"
+        h5(class="chatTitleStyle")="Chat:"
         div(id="chatEntry")
-            p="chat"
-            label(for="chatEmail")="Email"
-            input(type="text" id="chatEmail" name="chatEmail" value="asd@asd.com")
-            button(id="startChatBtn")="start chat"
+            label(for="chatEmail" class="labelsWidth")="Email:"
+            input(type="text" id="chatEmail" name="chatEmail")
+            button(id="startChatBtn" class="chatBtns")="start chat"
         div(class="chatMsgs" id="chatMsgsList")
             ul(id="chatList")
                 li="chatBot: Hola, soy el bot de chat, puedo ayudarte con lo siguiente: stock, orden o carrito"
             div
                 input(type="text" id="chatMsg")
-                button(id="sendMsgBtn")="Enviar mensaje"
-        div
-            a(href="/api/users/signup")="Sign Up"
+                button(id="sendMsgBtn" class="chatBtns")="Enviar mensaje"
+
         script(src="/socket.io/socket.io.js")
         script(src="/bot.js")
 

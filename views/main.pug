@@ -8,16 +8,13 @@ html
         form(action="/api/users/logout", method="POST")
             button(id="")="log out"
         div(id="chatEntry")
-            p="chat"
-            label(for="chatEmail")="Email"
-            input(type="text" id="chatEmail" name="chatEmail" value="asd@asd.com")
-            button(id="startChatBtn")="start chat"
+            button(id="startChatBtnLoggedIn")="start chat"
         div(class="chatMsgs" id="chatMsgsList")
             ul(id="chatList")
                 li="chatBot: Hola, soy el bot de chat, puedo ayudarte con lo siguiente: stock, orden o carrito"
             div
                 input(type="text" id="chatMsg")
-                button(id="sendMsgBtn")="Enviar mensaje"
+                button(id="sendMsgBtn" class="chatBtns")="Enviar mensaje"
         script(src="/socket.io/socket.io.js")
         script(src="/bot.js")
 

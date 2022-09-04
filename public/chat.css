@@ -1,3 +1,17 @@
 .chatMsgs {
   display: none;
 }
+
+.labelsWidth {
+  display: inline-block;
+  width: 130px;
+  margin: 5px 0;
+}
+
+.chatTitleStyle {
+  margin-top: 50px;
+}
+
+.chatBtns {
+  margin-left: 5px;
+}

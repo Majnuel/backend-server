@@ -1,4 +1,3 @@
-import passport from "passport";
 import * as socketio from "socket.io";
 import { getCartByUser } from "../api/carts";
 import { getOrderByUser } from "../api/orders";
@@ -23,11 +22,9 @@ export const initWsServer = (server: any) => {
       socket.id,
       "CLIENT SOCKET ID:",
       socket.client.id
-      // "SOCKET.REQUEST.SESSION: ",
-      // socket.request.session.passport.user
     );
 
-    socket.on("initiateChat", (userEmail: string) => {});
+    socket.on("initiateChat", () => {});
 
     socket.on("newMessage", async (message: string) => {
       switch (message) {

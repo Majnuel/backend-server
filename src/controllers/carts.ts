@@ -59,7 +59,6 @@ export const deleteProductFromCart = async (
   try {
     const { productId } = req.params;
     const { quantity } = req.body;
-    console.log("typeof quantity: ", typeof quantity);
     const userID = req.session.passport?.user;
     await deleteFromCart(userID, productId, quantity);
 
