@@ -1,3 +1,4 @@
+import { ApiError, ErrorStatus } from "../api/error";
 import config from "../config";
 
 const multer = require("multer");
@@ -10,10 +11,11 @@ const storage = new GridFsStorage({
     const match = ["image/png", "image/jpeg"];
 
     if (match.indexOf(file.mimetype) === -1) {
-      const filename = `${Date.now()}-any-name-${file.originalname}`;
-      return filename;
+      throw new ApiError(
+        "Only png and jpeg files allowed",
+        ErrorStatus.BadRequest
+      );
     }
-
     return {
       bucketName: "photos",
       filename: `${Date.now()}-products-${file.originalname}`

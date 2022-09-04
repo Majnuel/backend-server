@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema(
     description: { type: String, require: true, max: 1000 },
     categoryID: { type: String, require: true, max: 100 },
     thumbnailURL: { type: String, require: true, max: 250 },
+    images: { type: Array, require: false }
   },
   { timestamps: true, versionKey: false }
 );

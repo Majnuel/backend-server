@@ -32,3 +32,12 @@ export const update = async (
     { new: true }
   );
 };
+
+export const addImageToProduct = async (
+  productId: string,
+  imageUrl: string
+) => {
+  await productModel.findByIdAndUpdate(productId, {
+    $push: { images: imageUrl }
+  });
+};

@@ -1,9 +1,9 @@
 import express from "express";
+import { isValidObjectId } from "mongoose";
+import { addImageToProduct } from "../api/products";
 import { MongoDBClient } from "../services/database";
 const imageRouter = express.Router();
 const upload = require("../middlewares/imageUpload");
-const Grid = require("gridfs-stream");
-const mongoose = require("mongoose");
 
 imageRouter.get("/", (req, res) => {
   res.status(200).json({ msg: "image router" });
@@ -11,9 +11,14 @@ imageRouter.get("/", (req, res) => {
 
 // when posting from POSTMAN, make sure the key field is set to "file"
 imageRouter.post("/upload", upload.single("file"), async (req, res) => {
-  if (req.file === undefined) return res.send("you must select a file.");
-  const imgUrl = `http://localhost:8081/api/images/file/${req.file.filename}`;
-  return res.send(imgUrl);
+  if (!isValidObjectId(req.body.productId)) {
+    res.status(400).json({ msg: "productId not valid" });
+  } else {
+    if (req.file === undefined) return res.send("you must select a file.");
+    const imgUrl = `http://localhost:8081/api/images/file/${req.file.filename}`;
+    addImageToProduct(req.body.productId, imgUrl);
+    return res.send(imgUrl);
+  }
 });
 
 // media routes
