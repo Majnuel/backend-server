@@ -51,7 +51,6 @@ export const deleteFromCart = async (
 ) => {
   const cartToUpdate = await cartModel.find({ owner: `${userId}` });
   const productToDelete = await productModel.findById(productId);
-  console.log("QUANTITY!!!: ", quantity);
 
   if (!productToDelete) {
     throw new ApiError("Product does not exist in DB", ErrorStatus.NotFound);
@@ -66,15 +65,27 @@ export const deleteFromCart = async (
   if (indexOfItem === -1) {
     throw new ApiError("Product does not exist in cart", ErrorStatus.NotFound);
   }
-  console.log("product in cart: ", existingProductsCopy[indexOfItem]);
-  await cartModel.findOneAndUpdate(
-    { _id: cartToUpdate[0]._id.toString() },
-    {
-      products: existingProductsCopy.filter(
-        (item) => item.productId !== productId
-      )
-    }
-  );
+  if (
+    isNaN(quantity) ||
+    quantity > existingProductsCopy[indexOfItem].quantity
+  ) {
+    await cartModel.findOneAndUpdate(
+      { _id: cartToUpdate[0]._id.toString() },
+      {
+        products: existingProductsCopy.filter(
+          (item) => item.productId !== productId
+        )
+      }
+    );
+  } else if (quantity < existingProductsCopy[indexOfItem].quantity) {
+    existingProductsCopy[indexOfItem].quantity -= quantity;
+    await cartModel.findOneAndUpdate(
+      { _id: cartToUpdate[0]._id.toString() },
+      {
+        products: existingProductsCopy
+      }
+    );
+  }
 };
 
 export const newCart = async (id: string) => {

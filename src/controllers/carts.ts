@@ -1,6 +1,4 @@
-import { cartModel } from "../models/carts";
 import express from "express";
-import { logger } from "../services/logger";
 import {
   allCarts,
   getCartByUser,
@@ -59,10 +57,11 @@ export const deleteProductFromCart = async (
   res: express.Response
 ) => {
   try {
-    const { productId, quantity } = req.params;
-    const parsedQuantity = parseInt(quantity);
+    const { productId } = req.params;
+    const { quantity } = req.body;
+    console.log("typeof quantity: ", typeof quantity);
     const userID = req.session.passport?.user;
-    await deleteFromCart(userID, productId, parsedQuantity);
+    await deleteFromCart(userID, productId, quantity);
 
     res.status(200).json({ msg: "deleted from cart" });
   } catch (err: any) {

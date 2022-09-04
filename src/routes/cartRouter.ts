@@ -18,7 +18,7 @@ cartRouter.post(
   expressAsyncHandler(addProductToCart)
 );
 cartRouter.delete(
-  "/:productId/:quantity?",
+  "/:productId",
   isLoggedIn,
   expressAsyncHandler(deleteProductFromCart)
 );
