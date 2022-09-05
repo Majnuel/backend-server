@@ -1,4 +1,5 @@
 import express from "express";
+import { isValidObjectId } from "mongoose";
 import {
   allProducts,
   deleteProduct,
@@ -50,8 +51,14 @@ export const deleteByID = async (
 ) => {
   try {
     const id = req.params.id;
-    deleteProduct(id);
-    res.status(200).json({ msg: "product deleted" });
+    if (isValidObjectId(id) && (await getById(id))) {
+      deleteProduct(id);
+      res.status(200).json({ msg: "product deleted" });
+    } else {
+      res
+        .status(404)
+        .json({ msg: "product not found or not a valid productId" });
+    }
   } catch (err: any) {
     res.status(404).json({ error: err.message });
   }
@@ -63,11 +70,31 @@ export const updateProduct = async (
 ) => {
   try {
     const { id } = req.params;
-    const { name, description, stock, categoryID, price, thumbnailURL } =
-      req.body;
-    update(id, name, description, stock, price, categoryID, thumbnailURL);
+    if (isValidObjectId(id) && (await getById(id))) {
+      const {
+        name,
+        description,
+        stock,
+        categoryID,
+        price,
+        thumbnailURL,
+        images
+      } = req.body;
+      update(
+        id,
+        name,
+        description,
+        stock,
+        price,
+        categoryID,
+        thumbnailURL,
+        images
+      );
 
-    res.status(200).json({ msg: "product updated" });
+      res.status(200).json({ msg: "product updated" });
+    } else {
+      res.status(401).json({ msg: "bad request" });
+    }
   } catch (err: any) {
     res.status(404).json({ error: err.message });
   }

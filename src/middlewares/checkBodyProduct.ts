@@ -5,7 +5,7 @@ export const checkBodyProduct = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const { name, description, stock, price, categoryID, thumbnailURL } =
+  const { name, description, stock, price, categoryID, thumbnailURL, images } =
     req.body;
   if (
     !name ||
@@ -13,7 +13,8 @@ export const checkBodyProduct = async (
     !stock ||
     !price ||
     !categoryID ||
-    !thumbnailURL
+    !thumbnailURL ||
+    !images
   ) {
     return res.status(400).json({ msg: "missing body fields" });
   }

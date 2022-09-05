@@ -23,12 +23,13 @@ export const update = async (
   stock: number,
   price: number,
   categoryID: string,
-  thumbnailURL: string
+  thumbnailURL: string,
+  images: []
 ) => {
   let productToUpdate = await productModel.findById(id);
   await productModel.findByIdAndUpdate(
     id,
-    { name, description, stock, price, categoryID, thumbnailURL },
+    { name, description, stock, price, categoryID, thumbnailURL, images },
     { new: true }
   );
 };
