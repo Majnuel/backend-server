@@ -1,4 +1,5 @@
 const socket = io.connect();
+
 const chatEmailInput = document.getElementById("chatEmail");
 
 const startChatBtn = document.getElementById("startChatBtn");
@@ -13,6 +14,9 @@ let email = "";
 
 if (startChatBtn) {
   startChatBtn.addEventListener("click", () => startChat(chatEmailInput.value));
+  chatEmailInput.addEventListener("keydown", (e) =>
+    startChatNotLoggedIn(e, chatEmailInput.value)
+  );
 } else {
   startChatBtnLoggedIn.addEventListener("click", () => startChatLoggedIn());
 }
@@ -42,6 +46,12 @@ const appendReply = (reply) => {
 const sendMsgKeyDown = (e, message) => {
   if (e.keyCode === 13) {
     sendMsg(message);
+  }
+};
+
+const startChatNotLoggedIn = (e, emailValue) => {
+  if (e.keyCode === 13) {
+    startChat(emailValue);
   }
 };
 

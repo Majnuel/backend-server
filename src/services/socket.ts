@@ -39,11 +39,14 @@ export const initWsServer = (server: any) => {
               "debes ingresar con tu usuario y contraseña para obtener esa información"
             );
           } else {
-            console.log(socket.request.session.passport?.user);
             const orders = await getOrderByUser(
               socket.request.session.passport?.user
             );
-            socket.emit("newReply", JSON.stringify(orders));
+            if (!orders.length) {
+              socket.emit("newReply", "no tienes ordenes abiertas");
+            } else {
+              socket.emit("newReply", JSON.stringify(orders, null, 2));
+            }
           }
           break;
         case "carrito":
@@ -58,8 +61,14 @@ export const initWsServer = (server: any) => {
               return myCart;
             };
             cart(socket.request.session.passport.user).then((cart) => {
-              console.log(cart);
-              socket.emit("newReply", JSON.stringify(cart[0].products));
+              if (!cart[0].products.length) {
+                socket.emit("newReply", "no tienes productos en el carrito");
+              } else {
+                socket.emit(
+                  "newReply",
+                  JSON.stringify(cart[0].products, null, 2)
+                );
+              }
             });
           }
 
