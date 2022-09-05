@@ -93,17 +93,17 @@ export const userCheckOut = async (
       )}</ul>`
     );
     // aviso SMS a cliente:
-    // SmsService.sendMessage(
-    //   retrieveUserData(req).phone,
-    //   "Su pedido ha sido recibido y se encuentra en proceso"
-    // );
+    SmsService.sendMessage(
+      retrieveUserData(req).phone,
+      "Su pedido ha sido recibido y se encuentra en proceso"
+    );
     // aviso whatsapp al administrador:
-    // SmsService.sendWhatsAppMessage(
-    //   config.ADMIN_PHONE_NUMBER,
-    //   `Nuevo pedido de ${retrieveUserData(req).name}:\n\n${productListForWhatsapp(
-    //     cart[0].products
-    //   )}`
-    // );
+    SmsService.sendWhatsAppMessage(
+      config.ADMIN_PHONE_NUMBER,
+      `Nuevo pedido de ${
+        retrieveUserData(req).name
+      }:\n\n${productListForWhatsapp(cart[0].products)}`
+    );
 
     // vacío el carro una vez generada la orden:
     emptyCart(cart[0]._id.toString());
