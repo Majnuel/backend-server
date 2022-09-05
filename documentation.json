@@ -115,7 +115,7 @@
       "description": "a description",
       "get": {
         "summary": "get info on one product",
-        "description": "get",
+        "description": "get all the information on a product",
         "operationId": "getProduct",
         "parameters": [
           {
@@ -151,7 +151,7 @@
     "/products": {
       "get": {
         "summary": "list all products",
-        "description": "will return a list of all products",
+        "description": "will return a list of all products in database",
         "operationId": "getProducts",
         "tags": ["product"],
         "responses": {
@@ -237,17 +237,26 @@
         "responses": {
           "200": {
             "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized (must be logged in)"
+          },
+          "404": {
+            "description": "quantity is needed, product does not exist in database, quantity not available"
           }
         }
       },
       "delete": {
         "summary": "remove item(s) to user's cart",
-        "description": "add item to cart",
+        "description": "remove item(s) to user's cart",
         "operationId": "removeIteFromCart",
         "tags": ["cart"],
         "responses": {
           "200": {
             "description": "Successful operation"
+          },
+          "404": {
+            "description": "product not found in cart"
           }
         }
       }
@@ -266,6 +275,168 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Cart"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images": {
+      "summary": "handle images stored in database",
+      "post": {
+        "summary": "upload product images to the database",
+        "operationId": "uploadImage",
+        "tags": ["image"],
+        "requestBody": {
+          "description": "upload a new image",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "productId": {
+                    "type": "string",
+                    "format": "mongoID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "http://localhost:8081/api/images/file/1662338356150-products-fb.jpeg"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "productId not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "the error",
+                      "example": "productId or file format is not valid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/file/{filename}": {
+      "get": {
+        "summary": "retrieve image from database",
+        "operationId": "getImage",
+        "tags": ["image"],
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "description": "ID of product the image is related to",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoID"
+            },
+            "example": "62eea0e6fa15469f38f434b8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "image in PNG or JPEG format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "http://localhost:8081/api/images/file/1662338356150-products-fb.jpeg"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "file not found in db",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "the error",
+                      "example": "not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a file from the database",
+        "operationId": "deleteImage",
+        "tags": ["image"],
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "description": "ID of product the image is related to",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoID"
+            },
+            "example": "62eea0e6fa15469f38f434b8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "image in PNG or JPEG format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "file successfully deleted",
+                      "example": "file successfully deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "file not found in db",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "the error",
+                      "example": "file not found in databse"
+                    }
+                  }
                 }
               }
             }
@@ -314,6 +485,13 @@
           "categoryID": {
             "type": "string",
             "example": "airborne gear"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": ["some image-url", "some other image-url"]
+            }
           }
         }
       },

@@ -21,7 +21,6 @@ imageRouter.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
-// media routes
 imageRouter.get("/file/:filename", async (req, res) => {
   try {
     const readStream: any = await MongoDBClient.getFile(
@@ -30,14 +29,20 @@ imageRouter.get("/file/:filename", async (req, res) => {
   } catch (error) {
     console.log("ERROR");
     console.log(error);
-    res.send("not found");
+    res.status(404).json({ msg: "not found" });
   }
 });
 
 imageRouter.delete("/file/:filename", async (req, res) => {
   try {
-    await MongoDBClient.gfs.files.deleteOne({ filename: req.params.filename });
-    res.send("success");
+    const deletion = await MongoDBClient.gfs.files.deleteOne({
+      filename: req.params.filename
+    });
+    if (deletion.deletedCount !== 0) {
+      res.status(200).json({ msg: "file successfully deleted" });
+    } else {
+      res.status(404).json({ msg: "file not found in database" });
+    }
   } catch (error) {
     console.log(error);
     res.send("An error occured.");
