@@ -16,10 +16,14 @@ export const getProducts = async (
     try {
       const id = req.params.id;
       const product = await getById(id);
-      res.status(200).json({ product: product });
+      if (!product) {
+        res.status(404).json({ msg: "product not found" });
+      } else {
+        res.status(200).json({ product: product });
+      }
     } catch (err: any) {
       res
-        .status(404)
+        .status(401)
         .json({ msg: "not a valid product ID", error: err.message });
     }
   } else {
@@ -39,7 +43,7 @@ export const createProduct = async (
   try {
     const product = { ...req.body };
     await newProduct(product);
-    res.status(201).json({ product: product });
+    res.status(201).json({ "new product": product });
   } catch (err: any) {
     res.status(404).json({ error: err.message });
   }
@@ -93,7 +97,7 @@ export const updateProduct = async (
 
       res.status(200).json({ msg: "product updated" });
     } else {
-      res.status(401).json({ msg: "bad request" });
+      res.status(400).json({ msg: "bad request" });
     }
   } catch (err: any) {
     res.status(404).json({ error: err.message });

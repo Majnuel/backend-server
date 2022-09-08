@@ -1,10 +1,18 @@
 import express from "express";
-import { getOrderByUser } from "../api/orders";
-import { orderByUser } from "../controllers/orders";
+import {
+  currentUserOrders,
+  allOrders,
+  orderByUser
+} from "../controllers/orders";
 import { isLoggedIn } from "../middlewares/auth";
+import { isAdmin } from "../middlewares/isAdmin";
 
 const orderRouter = express.Router();
 
-orderRouter.get("/my-order", isLoggedIn, orderByUser);
+orderRouter.get("/my-orders", isLoggedIn, currentUserOrders);
+
+orderRouter.get("/all-orders", isAdmin, allOrders);
+
+orderRouter.post("/order-by-user", isAdmin, orderByUser);
 
 export { orderRouter };

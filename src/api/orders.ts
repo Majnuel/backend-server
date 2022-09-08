@@ -22,3 +22,5 @@ export const newOrder = (userID: String, products: []) => {
 
 export const getOrderByUser = (userId: string) =>
   orderModel.find({ user: userId });
+
+export const getAllOrders = () => orderModel.find();

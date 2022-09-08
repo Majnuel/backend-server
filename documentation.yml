@@ -13,7 +13,7 @@ paths:
     description: a description
     post:
       summary: post to create a new user
-      description: perform a post to this endpoint to create a new user
+      description: post to this endpoint to create a new user, see body in example
       operationId: "userSignup"
       requestBody:
         description: create a new user
@@ -66,6 +66,17 @@ paths:
         "200":
           description: Successful operation
 
+  /users/user-data:
+    get:
+      description: will show the user's info, including cart contents
+      tags:
+        - user
+      responses:
+        "200":
+          description: Successful operation, user information is sent
+        "401":
+          description: Unauthorized, please lof in
+
   /users/checkout:
     get:
       summary: checkout and complete purchase
@@ -74,7 +85,7 @@ paths:
         - user
       responses:
         "200":
-          description: Successful operation
+          description: Successful operation, cart/order items will be shown.
         "400":
           description: cant checkout on an empty cart
         "401":
@@ -105,8 +116,48 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Product"
+        "401":
+          description: not a valid productID
         "404":
           description: not found
+    put:
+      summary: update a product
+      description: send the whole product in body, all fields
+      parameters:
+        - name: productId
+          in: path
+          description: ID of product to update
+          required: true
+          schema:
+            type: string
+            format: mongoID
+          example: 62eea0e6fa15469f38f434b8
+      tags:
+        - product
+      responses:
+        "200":
+          description: Successful operation
+        "400":
+          description: Missing body fields / Bad request
+    delete:
+      summary: delete a product
+      tags:
+        - product
+      operationId: "deleteProduct"
+      parameters:
+        - name: productId
+          in: path
+          description: ID of product to update
+          required: true
+          schema:
+            type: string
+            format: mongoID
+          example: 62eea0e6fa15469f38f434b8
+      responses:
+        "200":
+          description: Successful operation. Product deleted
+        "404":
+          description: Product not found or not a valid productID
 
   /products:
     get:
@@ -129,27 +180,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "products"
+              $ref: "#/components/schemas/Product"
       responses:
         "200":
           description: Successful operation
-        default:
-          description: Default error sample response
-    delete:
-      summary: delete a product
-      tags:
-        - product
-      operationId: "deleteProduct"
-      responses:
-        "200":
-          description: Successful operation
-    put:
-      summary: update a product
-      tags:
-        - product
-      responses:
-        "200":
-          description: Successful operation
+        "400":
+          description: Missing body fields
+        "401":
+          description: Unauthorized, you must log in first
+
   /carts:
     get:
       summary: list all carts
@@ -165,15 +204,26 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Product"
+                  $ref: "#/components/schemas/Cart"
         "401":
           description: not authorized, user is not admin
+
+  /carts/{productId}:
     post:
       summary: add item(s) to user's cart
       description: add item(s) to cart
       operationId: "addItemToCart"
       tags:
         - cart
+      parameters:
+        - name: productId
+          in: path
+          description: ID of product to return
+          required: true
+          schema:
+            type: string
+            format: mongoID
+          example: 62eea0e6fa15469f38f434b8
       responses:
         "200":
           description: Successful operation
@@ -183,15 +233,27 @@ paths:
           description: quantity is needed, product does not exist in database, quantity not available
     delete:
       summary: remove item(s) to user's cart
-      description: remove item(s) to user's cart
+      description: remove item(s) to user's cart. If no quantity is sent in body or quantity in body is higher than quantity in cart the Product will be removed from the cart in full
       operationId: "removeIteFromCart"
       tags:
         - cart
+      parameters:
+        - name: productId
+          in: path
+          description: ID of product to remove from cart
+          required: true
+          schema:
+            type: string
+            format: mongoID
+          example: 62eea0e6fa15469f38f434b8
       responses:
         "200":
-          description: Successful operation
+          description: Deleted from cart
         "404":
-          description: product not found in cart
+          description: product does not exist in cart
+
+    summary: post to add product to cart
+
   /carts/products:
     summary: shows the items in cart for a logged in user
     description: shows the items in cart for a logged in user
@@ -206,7 +268,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Cart"
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductInCart"
 
   /images:
     summary: handle images stored in database
@@ -247,6 +311,7 @@ paths:
                     type: string
                     description: the error
                     example: productId or file format is not valid
+
   /images/file/{filename}:
     get:
       summary: retrieve image from database
@@ -318,6 +383,58 @@ paths:
                     type: string
                     description: the error
                     example: file not found in databse
+
+  /orders/my-orders:
+    get:
+      description: will show all active orders for logged-in user
+      tags:
+        - order
+      responses:
+        "200":
+          description: Successful operation. will show orders.
+        "401":
+          description: Unauthorized (must be logged in)
+
+  /orders/all-orders:
+    get:
+      description: will show all active orders
+      tags:
+        - order
+      responses:
+        "200":
+          description: Successful operation. will show orders.
+        "401":
+          description: not authorized, ADMIN status is needed
+
+  /orders/orders-by-user:
+    post:
+      description: will show all active orders, userId must be sent in body
+      tags:
+        - order
+      requestBody:
+        description: userId who's orders you are trying to get
+        required: true
+        content:
+          application.json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 62eea0e6fa15469f38f434b8
+
+      responses:
+        "200":
+          description: Successful operation. will show orders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+        "401":
+          description: not authorized, ADMIN status is needed
+
 components:
   schemas:
     Product:
@@ -355,7 +472,23 @@ components:
           type: array
           items:
             type: string
-            example: [some image-url, some other image-url]
+            example: some image-url, some other image-url
+
+    ProductInCart:
+      type: object
+      properties:
+        product:
+          type: string
+          example: Jetpack
+        quantity:
+          type: number
+          example: 4
+        productId:
+          type: string
+          example: 62ee9eb116316dfa5da61080
+        price:
+          type: number
+          example: 1500
 
     Cart:
       type: object
@@ -372,7 +505,8 @@ components:
         products:
           type: array
           items:
-            $ref: "#/components/schemas/Product"
+            $ref: "#/components/schemas/ProductInCart"
+
     User:
       type: object
       required:
@@ -396,9 +530,6 @@ components:
         phone:
           type: string
           example: +54 261 616 0016
-        admin:
-          type: boolean
-          example: false
 
     Order:
       type: object
