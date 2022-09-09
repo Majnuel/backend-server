@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Backend Coderhouse",
-    "description": "This is the documentation of the server",
+    "description": "This is the documentation of the server.\nExisting admin user:\nusername: emma@emma.com\npassword: emma\nExisting non-admin user:\nusername: olga@olga.com\npassword: olga",
     "contact": {
       "email": "ecalle87@gmail.com"
     },
